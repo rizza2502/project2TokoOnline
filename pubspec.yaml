@@ -58,6 +58,14 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  
+  assets:
+    - assets/iphone12pro.jpg
+    - assets/iphone13.jpg
+    - assets/iphone15.jpg
+    - assets/iphone17.jpg
+    - assets/iphonexr.jpg
+    - assets/iphone16.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
