@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: flutter_application_1
+=======
+name: toko_online
+>>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -34,7 +38,11 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+<<<<<<< HEAD
   http: ^1.6.0
+=======
+  http: ^1.2.2  
+>>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
   shared_preferences: ^2.5.3
 
 dev_dependencies:
@@ -58,6 +66,17 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+<<<<<<< HEAD
+=======
+  
+  assets:
+    - assets/iphone12pro.jpg
+    - assets/iphone13.jpg
+    - assets/iphone15.jpg
+    - assets/iphone17.jpg
+    - assets/iphonexr.jpg
+    - assets/iphone16.jpg
+>>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
 
   # To add assets to your application, add an assets section, like this:
   # assets:

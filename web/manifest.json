@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "flutter_application_1",
     "short_name": "flutter_application_1",
+=======
+    "name": "toko_online",
+    "short_name": "toko_online",
+>>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 # flutter_application_1
+=======
+# toko_online
+
+link demo video project: 
+https://drive.google.com/drive/folders/1K7I_8fZNturS3Ml3PKWUiVHADW1gyRZA?usp=drive_link
+>>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
 
 A new Flutter project.
 
