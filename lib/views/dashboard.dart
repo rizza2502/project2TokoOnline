@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:flutter_application_1/models/user_login.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
-=======
-import 'package:toko_online/models/user_login.dart';
-import 'package:toko_online/widgets/bottom_nav.dart';
->>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
