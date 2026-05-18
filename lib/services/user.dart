@@ -1,5 +1,4 @@
 import 'dart:convert';
-<<<<<<< HEAD
 import 'package:flutter_application_1/models/response_data_map.dart';
 import 'package:flutter_application_1/models/user_login.dart';
 import 'package:flutter_application_1/services/url.dart' as url;
@@ -18,20 +17,6 @@ class UserService {
 
       var register = await http
           .post(uri, body: cleanData)
-=======
-import 'package:toko_online/models/response_data_map.dart';
-import 'package:toko_online/models/user_login.dart';
-import 'package:toko_online/services/url.dart' as url;
-import 'package:http/http.dart' as http;
-
-class UserService {
-  Future<ResponseDataMap> registerUser(data) async {
-    try {
-      var uri = Uri.parse("${url.BaseUrl}/auth/register");
-
-      var register = await http
-          .post(uri, body: data)
->>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
           .timeout(const Duration(seconds: 10));
 
       if (register.statusCode == 200) {
@@ -45,7 +30,6 @@ class UserService {
           );
         } else {
           String message = "";
-<<<<<<< HEAD
           // FIX: jaga-jaga jika message bukan Map (bisa berupa String langsung)
           if (res["message"] is Map) {
             for (String key in res["message"].keys) {
@@ -55,13 +39,6 @@ class UserService {
             message = res["message"].toString();
           }
           return ResponseDataMap(status: false, message: message.trim());
-=======
-          for (String key in res["message"].keys) {
-            message += res["message"][key][0] + "\n";
-          }
-
-          return ResponseDataMap(status: false, message: message);
->>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
         }
       } else {
         return ResponseDataMap(
@@ -71,21 +48,13 @@ class UserService {
       }
     } catch (e) {
       print("REGISTER ERROR: $e");
-<<<<<<< HEAD
       return ResponseDataMap(
         status: false,
         message: "Tidak dapat terhubung ke server: $e",
-=======
-
-      return ResponseDataMap(
-        status: false,
-        message: "Tidak dapat terhubung ke server $e",
->>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
       );
     }
   }
 
-<<<<<<< HEAD
   Future<ResponseDataMap> loginUser(Map<String, dynamic> data) async {
     try {
       // FIX: konversi semua value ke String, hindari null
@@ -138,44 +107,6 @@ class UserService {
         status: false,
         message: "Tidak dapat terhubung ke server: $e",
       );
-=======
-  Future<ResponseDataMap> loginUser(data) async {
-    var uri = Uri.parse(url.BaseUrl + "/auth/login");
-    var register = await http.post(uri, body: data);
-    if (register.statusCode == 200) {
-      var data = json.decode(register.body);
-      if (data["status"] == true) {
-        UserLogin userLogin = UserLogin(
-          status: data["status"],
-          token: data["token"],
-          message: data["message"],
-          id: data["user"]["id"],
-          nama_user: data["user"]["nama_user"],
-          email: data["user"]["email"],
-          role: data["user"]["role"],
-        );
-        await userLogin.prefs();
-        ResponseDataMap response = ResponseDataMap(
-          status: true,
-          message: "Sukses login user",
-          data: data,
-        );
-        print(response);
-        return response;
-      } else {
-        ResponseDataMap response = ResponseDataMap(
-          status: false,
-          message: 'Email dan password salah',
-        );
-        return response;
-      }
-    } else {
-      ResponseDataMap response = ResponseDataMap(
-        status: false,
-        message: "gagal login user dengan code error ${register.statusCode}",
-      );
-      return response;
->>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
     }
   }
 }

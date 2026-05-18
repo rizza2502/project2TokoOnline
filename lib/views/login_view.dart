@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:flutter_application_1/services/user.dart';
 import 'package:flutter_application_1/widgets/alert.dart';
-=======
-import 'package:toko_online/services/user.dart';
-import 'package:toko_online/widgets/alert.dart';
->>>>>>> 874a133f891163f73d120b5c17adabae4cceedff
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});

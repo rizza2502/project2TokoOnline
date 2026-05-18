@@ -58,6 +58,6 @@ class AlertMessage {
       ),
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    AlertMessage().showAlert;
   }
 }
