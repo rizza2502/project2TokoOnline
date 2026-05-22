@@ -58,6 +58,7 @@ class AlertMessage {
       ),
     );
 
-    AlertMessage().showAlert;
+    // ✅ Baris ini yang diperbaiki
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

@@ -163,9 +163,10 @@ class _LoginViewState extends State<LoginView> {
                               true,
                             );
                             Future.delayed(const Duration(seconds: 2), () {
-                              Navigator.pushReplacementNamed(
+                              Navigator.pushNamedAndRemoveUntil(
                                 context,
                                 '/dashboard',
+                                (route) => false,
                               );
                             });
                           } else {
