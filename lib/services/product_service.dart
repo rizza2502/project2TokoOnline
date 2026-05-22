@@ -22,7 +22,7 @@ class ProductService {
       );
     }
 
-    var uri = Uri.parse("${url.BaseUrl}/admin/getbarang");
+    var uri = Uri.parse("${url.BaseUrl}/user/getbarang");
 
     try {
       var response = await http
