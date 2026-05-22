@@ -49,20 +49,21 @@ class _ProductViewState extends State<ProductView> {
 
   // ================= DELETE =================
   Future<void> deleteBarang(String id) async {
-    bool success = await productService.deleteProduct(id);
+    // FIX: deleteProduct sekarang return Map bukan bool
+    Map<String, dynamic> result = await productService.deleteProduct(id);
 
-    if (success) {
+    if (result['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Produk berhasil dihapus"),
-        ),
+        SnackBar(content: Text(result['message'] ?? "Produk berhasil dihapus")),
       );
-
+      // FIX: Refresh list setelah delete berhasil
       getBarang();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Gagal menghapus produk"),
+        SnackBar(
+          // FIX: Tampilkan pesan error dari server agar bisa debug
+          content: Text("Gagal menghapus: ${result['message']}"),
+          backgroundColor: Colors.red,
         ),
       );
     }
@@ -75,11 +76,8 @@ class _ProductViewState extends State<ProductView> {
       builder: (context) {
         return AlertDialog(
           title: const Text("Hapus Produk"),
-          content: Text(
-            "Yakin ingin menghapus ${item.namaBarang} ?",
-          ),
+          content: Text("Yakin ingin menghapus ${item.namaBarang} ?"),
           actions: [
-
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -88,17 +86,14 @@ class _ProductViewState extends State<ProductView> {
             ),
 
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
 
               onPressed: () {
                 Navigator.pop(context);
-
                 deleteBarang(item.id.toString());
               },
 
-              child: const Text("Hapus"),
+              child: const Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -111,26 +106,36 @@ class _ProductViewState extends State<ProductView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Katalog Produk"),
+        title: const Text(
+          "Katalog Produk",
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+        ),
         backgroundColor: const Color(0xFF800000),
         foregroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: getBarang,
+            icon: const Icon(Icons.refresh),
+            tooltip: "Refresh",
+          ),
+        ],
       ),
 
       // ================= ADD BUTTON =================
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF800000),
-
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
 
         onPressed: () async {
-
-          await Navigator.push(
+          // FIX: Cek return value dari AddProductView
+          // Jika pop(true), artinya berhasil tambah, langsung refresh
+          final result = await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const AddProductView(),
-            ),
+            MaterialPageRoute(builder: (_) => const AddProductView()),
           );
 
+          // FIX: Refresh selalu setelah kembali dari add, bukan hanya kalau result == true
           getBarang();
         },
       ),
@@ -143,33 +148,20 @@ class _ProductViewState extends State<ProductView> {
 
   // ================= BODY =================
   Widget _buildBody() {
-
-    // ================= LOADING =================
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
-    // ================= ERROR =================
     if (errorMessage.isNotEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            const Icon(
-              Icons.error_outline,
-              size: 60,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 60, color: Colors.red),
 
             const SizedBox(height: 12),
 
-            Text(
-              errorMessage,
-              textAlign: TextAlign.center,
-            ),
+            Text(errorMessage, textAlign: TextAlign.center),
 
             const SizedBox(height: 20),
 
@@ -183,167 +175,160 @@ class _ProductViewState extends State<ProductView> {
       );
     }
 
-    // ================= EMPTY =================
     if (listBarang.isEmpty) {
-      return const Center(
-        child: Text("Tidak ada produk"),
-      );
+      return const Center(child: Text("Tidak ada produk"));
     }
 
-    // ================= LIST =================
-    return RefreshIndicator(
-      onRefresh: getBarang,
+    return Container(
+      color: const Color(0xFFF5F5F5),
+      child: RefreshIndicator(
+        onRefresh: getBarang,
 
-      child: ListView.builder(
-        itemCount: listBarang.length,
+        child: ListView.builder(
+          itemCount: listBarang.length,
 
-        itemBuilder: (context, index) {
+          itemBuilder: (context, index) {
+            ProductModel item = listBarang[index];
 
-          ProductModel item = listBarang[index];
-
-          return Card(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 6,
-            ),
-
-            elevation: 3,
-
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-
-            child: ListTile(
-
-              contentPadding: const EdgeInsets.all(10),
-
-              // ================= EDIT PAGE =================
-              onTap: () async {
-
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => EditProductView(
-                      product: item,
-                    ),
-                  ),
-                );
-
-                getBarang();
-              },
-
-              // ================= IMAGE =================
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-
-                child: Image.network(
-                  item.image ?? "",
-
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-
-                  errorBuilder:
-                      (context, error, stackTrace) {
-
-                    return Container(
-                      width: 70,
-                      height: 70,
-                      color: Colors.grey.shade300,
-
-                      child: const Icon(
-                        Icons.broken_image,
-                        size: 30,
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // ================= TITLE =================
-              title: Text(
-                item.namaBarang ?? "-",
-
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-
-              // ================= SUBTITLE =================
-              subtitle: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-
-                children: [
-
-                  const SizedBox(height: 6),
-
-                  Text(
-                    "Rp${item.harga}",
-
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  Text(
-                    "Stok : ${item.stok}",
-
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.07),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
-
-              // ================= ACTION =================
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-
-                children: [
-
-                  // ================= EDIT =================
-                  IconButton(
-                    onPressed: () async {
-
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => EditProductView(
-                            product: item,
-                          ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditProductView(product: item),
+                    ),
+                  );
+                  getBarang();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      // Gambar
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          item.image ?? "",
+                          width: 75,
+                          height: 75,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                width: 75,
+                                height: 75,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey,
+                                  size: 30,
+                                ),
+                              ),
                         ),
-                      );
+                      ),
+                      const SizedBox(width: 14),
 
-                      getBarang();
-                    },
+                      // Info produk
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.namaBarang ?? "-",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                                color: Colors.black87,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "Rp${item.harga}",
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.inventory_2_outlined,
+                                  size: 13,
+                                  color: Colors.grey.shade500,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "Stok: ${item.stok}",
+                                  style: TextStyle(
+                                    color: Colors.grey.shade500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
 
-                    icon: const Icon(
-                      Icons.edit,
-                      color: Colors.orange,
-                    ),
+                      // Tombol aksi
+                      Column(
+                        children: [
+                          IconButton(
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      EditProductView(product: item),
+                                ),
+                              );
+                              getBarang();
+                            },
+                            icon: const Icon(
+                              Icons.edit_outlined,
+                              color: Colors.orange,
+                              size: 22,
+                            ),
+                            tooltip: "Edit",
+                          ),
+                          IconButton(
+                            onPressed: () => showDeleteDialog(item),
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
+                              size: 22,
+                            ),
+                            tooltip: "Hapus",
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-
-                  // ================= DELETE =================
-                  IconButton(
-                    onPressed: () {
-                      showDeleteDialog(item);
-                    },
-
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
