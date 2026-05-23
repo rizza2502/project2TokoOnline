@@ -44,7 +44,30 @@ class _DashboardViewState extends State<DashboardView> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, '/login');
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Konfirmasi Logout'),
+                  content: const Text('Apakah kamu yakin ingin keluar?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context), // ← tutup dialog
+                      child: const Text('Batal'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context); // ← tutup dialog
+                        Navigator.popAndPushNamed(
+                          context,
+                          '/login',
+                        ); // ← logout
+                      },
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      child: const Text('Logout'),
+                    ),
+                  ],
+                ),
+              );
             },
             icon: const Icon(Icons.logout),
             tooltip: "Logout",
@@ -70,11 +93,7 @@ class _DashboardViewState extends State<DashboardView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.dashboard_outlined,
-                size: 80,
-                color: mainColor,
-              ),
+              Icon(Icons.dashboard_outlined, size: 80, color: mainColor),
               const SizedBox(height: 16),
               Text(
                 "Dashboard",
@@ -87,12 +106,7 @@ class _DashboardViewState extends State<DashboardView> {
               const SizedBox(height: 20),
               Divider(color: mainColor.withOpacity(0.3)),
               const SizedBox(height: 20),
-              Text(
-                "Selamat Datang,",
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              Text("Selamat Datang,", style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 8),
               Text(
                 nama ?? "-",

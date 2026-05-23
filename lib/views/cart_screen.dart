@@ -254,7 +254,7 @@ class _CartScreenState extends State<CartScreen> {
                             Future.delayed(const Duration(seconds: 2), () {
                               Navigator.pushNamedAndRemoveUntil(
                                 context,
-                                '/transaksi',
+                                '/history_transaksi',
                                 (route) => false,
                               );
                             });

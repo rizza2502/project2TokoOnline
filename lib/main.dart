@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/views/history_transaksi_view.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter_application_1/views/login_view.dart';
 import 'package:flutter_application_1/views/dashboard.dart';
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
         '/dashboard': (context) => const DashboardView(),
         '/product': (context) => const ProductView(),
         '/transaksi': (context) => const TransaksiView(),
-        '/cart': (context) => const CartScreen(),             // ← TAMBAH
+        '/history_transaksi': (context) => const HistoryTransaksiView(),
+        '/cart': (context) => const CartScreen(),             
       },
     );
   }
